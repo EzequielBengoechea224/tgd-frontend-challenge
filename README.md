@@ -88,21 +88,55 @@ src/
 └── main.tsx
 ```
 
-## Getting Started
+## Getting Started 🚀
 
-1. Install dependencies:
+### 1. **Fork the Repository**
+   - **⚠️ You must fork this repository to your own GitHub account before starting the challenge.**
 
-```bash
-npm install
-```
+### 2. **Clone Your Fork**
+   - You can clone your fork using **GitHub Desktop** or **Git Bash**.
 
-2. Start the development server:
+---
 
-```bash
-npm run dev
-```
+#### **Option A: Clone using GitHub Desktop** 🖥️
 
-3. Open your browser and navigate to the URL shown in the terminal (usually `http://localhost:5173`)
+1. **Open** GitHub Desktop
+2. **Make sure** you are logged in with the GitHub account that owns the fork
+3. **Click** `File → Clone repository`
+4. **Select** your fork from the list, or go to the **URL tab** and paste your fork URL
+5. **Choose** a local path and click **Clone**
+6. **Open** the project folder in your preferred code editor (e.g., **Visual Studio Code**)
+
+---
+
+#### **Option B: Clone using Git Bash** 💻
+
+1. **Open** Git Bash
+2. **Navigate** to the directory where you want to clone the project
+3. **Run:**
+   ```bash
+   git clone <your-fork-repository-url>
+   ```
+4. **Move** into the project folder:
+   ```bash
+   cd <repository-folder>
+   ```
+
+---
+
+### 3. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+### 4. **Start the Development Server**
+   ```bash
+   npm run dev
+   ```
+
+### 5. **Open the Application**
+   - **Open** your browser and **navigate** to the URL shown in the terminal  
+   - **📍 Usually:** `http://localhost:5173`
 
 ## Important Notes
 
@@ -117,9 +151,9 @@ npm run dev
 
 - Correct implementation of API calls (GET, PUT)
 - Proper state management (loading, error, data)
-- Code quality and organization
+- Code quality and organization 🔥
 - User experience (loading states, error handling)
-- TypeScript usage and type safety
+- TypeScript usage and type safety 🔥
 - Material UI component usage and styling
 
 ## Submission
