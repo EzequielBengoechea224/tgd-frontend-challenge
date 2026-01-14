@@ -1,4 +1,7 @@
-import { useAssetsData } from "@/features/assets";
+import { useState, useCallback } from "react";
+import useAssetsData from "../hooks/useAssetsData";
+import EditCapacityModal from "../components/EditCapacityModal";
+import type { Asset } from "../types/assetTypes";
 import {
   Box,
   Button,
@@ -12,6 +15,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { Spinner } from "@/shared/components";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,58 +39,71 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const AssetsTable = () => {
   const { data, isLoading, error } = useAssetsData();
 
-  // TODO: Handle loading state
-  // TODO: Handle error state
+  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
 
-  // TODO: Implement handleUpdate function for PUT request
-  const handleUpdate = async (id: string, asset: any) => {
-    // Use updateAsset service
-  };
+  console.log(data);
+
+  // Optimizado con useCallback
+  const handleOpenModal = useCallback((asset: Asset) => {
+    setSelectedAsset(asset);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedAsset(null);
+  }, []);
+
+
+  if (isLoading) return <Spinner />;
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="assets table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>ID</StyledTableCell>
-            <StyledTableCell>Name</StyledTableCell>
-            {/* Add more columns as needed */}
-            <StyledTableCell align="right">Actions</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row) => (
-            <StyledTableRow key={row.id}>
-              <StyledTableCell component="th" scope="row">
-                {row.id}
-              </StyledTableCell>
-              <StyledTableCell>{row.name}</StyledTableCell>
-              {/* Add more cells as needed */}
-              <StyledTableCell align="right">
-                <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
-                  {/* TODO: Add button for PUT action */}
-                  {/* Example: */}
-                </Box>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-          {/* Example row, remove it after implementation */}
-          <StyledTableRow>
-            <StyledTableCell component="th" scope="row">
-              1
-            </StyledTableCell>
-            <StyledTableCell>Asset 1</StyledTableCell>
-            <StyledTableCell align="right">
-              <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
-                <Button variant="outlined">
-                  Update
-                </Button>
-              </Box>
-            </StyledTableCell>
-          </StyledTableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      {/* Modal separado - sus cambios NO re-renderizan la tabla */}
+      <EditCapacityModal
+        open={!!selectedAsset}
+        asset={selectedAsset}
+        onClose={handleCloseModal}
+      />
+
+      {/* Tabla - solo se re-renderiza cuando cambian los datos, no cuando cambia el modal */}
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="assets table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>ID</StyledTableCell>
+              <StyledTableCell>Equipment</StyledTableCell>
+              <StyledTableCell>Element</StyledTableCell>
+              <StyledTableCell>Component</StyledTableCell>
+              <StyledTableCell>Capacity</StyledTableCell>
+              <StyledTableCell align="right">Actions</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row) => (
+              <StyledTableRow key={row.id}>
+                <StyledTableCell component="th" scope="row">
+                  {row.id}
+                </StyledTableCell>
+                <StyledTableCell>{row.equipment}</StyledTableCell>
+                <StyledTableCell>{row.element}</StyledTableCell>
+                <StyledTableCell>{row.component}</StyledTableCell>
+                <StyledTableCell>{row.capacity}</StyledTableCell>
+                <StyledTableCell align="right">
+                  <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleOpenModal(row)}
+                    >
+                      Update
+                    </Button>
+                  </Box>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 
