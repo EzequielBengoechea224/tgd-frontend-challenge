@@ -1,5 +1,4 @@
-// components/EditCapacityModal.tsx (archivo separado)
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Box, TextField, Button, Typography } from "@mui/material";
 import type { Asset } from "../types/assetTypes";
 import { useUpdateAsset } from "../hooks/useUpdateAsset";
@@ -11,12 +10,20 @@ interface EditCapacityModalProps {
 }
 
 const EditCapacityModal = ({ open, asset, onClose }: EditCapacityModalProps) => {
-  const [capacityValue, setCapacityValue] = useState<string>(asset ? String(asset.capacity) : "");
-  const { executeUpdateAsset, isLoading } = useUpdateAsset();
+  const [capacityValue, setCapacityValue] = useState("");
+  const { mutateAsync, isLoading } = useUpdateAsset();
+
+  // 🔑 sincroniza cuando cambia el asset
+  useEffect(() => {
+    if (asset) {
+      setCapacityValue(String(asset.capacity));
+    }
+  }, [asset]);
+
   const handleSave = async () => {
     if (!asset) return;
 
-    await executeUpdateAsset({
+    await mutateAsync({
       ...asset,
       capacity: Number(capacityValue),
     });
@@ -38,12 +45,9 @@ const EditCapacityModal = ({ open, asset, onClose }: EditCapacityModalProps) => 
           bgcolor: "white",
           p: 3,
           borderRadius: 2,
-          boxShadow: 24,
         }}
       >
-        <Typography variant="h6" gutterBottom>
-          Editar: {asset.equipment}
-        </Typography>
+        <Typography variant="h6">Editar: {asset.equipment}</Typography>
 
         <TextField
           autoFocus
@@ -54,9 +58,10 @@ const EditCapacityModal = ({ open, asset, onClose }: EditCapacityModalProps) => 
           onChange={(e) => setCapacityValue(e.target.value)}
           sx={{ my: 2 }}
         />
-        <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end", mt: 3 }}>
+
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
           <Button onClick={onClose}>Cancelar</Button>
-          <Button variant="contained" onClick={handleSave}>
+          <Button variant="contained" onClick={handleSave} disabled={isLoading}>
             Guardar
           </Button>
         </Box>

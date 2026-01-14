@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import useAssetsData from "../hooks/useAssetsData";
 import EditCapacityModal from "../components/EditCapacityModal";
 import type { Asset } from "../types/assetTypes";
 import {
@@ -16,6 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { Spinner } from "@/shared/components";
+import { useAssets } from "../hooks/useAssets";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,7 +37,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const AssetsTable = () => {
-  const { data, isLoading, error } = useAssetsData();
+  const { data = [], isLoading, error } = useAssets();
 
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
 
@@ -52,17 +52,17 @@ const AssetsTable = () => {
     setSelectedAsset(null);
   }, []);
 
-
-  if (isLoading) return <Spinner />;
+  if (isLoading)
+    return (
+      <Box style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Spinner />
+      </Box>
+    );
 
   return (
     <>
       {/* Modal separado - sus cambios NO re-renderizan la tabla */}
-      <EditCapacityModal
-        open={!!selectedAsset}
-        asset={selectedAsset}
-        onClose={handleCloseModal}
-      />
+      <EditCapacityModal open={!!selectedAsset} asset={selectedAsset} onClose={handleCloseModal} />
 
       {/* Tabla - solo se re-renderiza cuando cambian los datos, no cuando cambia el modal */}
       <TableContainer component={Paper}>
